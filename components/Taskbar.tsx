@@ -8,17 +8,25 @@ import { useThemeStore } from '@/store/useThemeStore'
 import { installedApps } from '@/data/apps'
 
 export default function Taskbar() {
-  const { windows, toggleMinimize, setActiveWindow } = useWindowStore()
+  const { windows, toggleMinimize, setActiveWindow, activeWindowId } = useWindowStore()
   const { toggleStartMenu, isStartMenuOpen } = useUIStore()
   const { theme, toggleTheme } = useThemeStore()
 
   const handleAppClick = (windowId: string) => {
     const window = windows.find((w) => w.id === windowId)
     if (window) {
+      // Windows 11 behavior:
+      // 1. If minimized → restore and focus
+      // 2. If focused (active) → minimize
+      // 3. If not focused → focus
       if (window.isMinimized) {
         toggleMinimize(windowId)
+        setActiveWindow(windowId)
+      } else if (activeWindowId === windowId) {
+        toggleMinimize(windowId)
+      } else {
+        setActiveWindow(windowId)
       }
-      setActiveWindow(windowId)
     }
   }
 
@@ -86,7 +94,8 @@ export default function Taskbar() {
           .filter((app) => app.isPinned)
           .map((app) => {
             const window = windows.find((w) => w.appType === app.type)
-            const isActive = window && !window.isMinimized
+            const isActive = window && !window.isMinimized && activeWindowId === window.id
+            const isRunning = !!window
 
             return (
               <motion.button
@@ -104,10 +113,19 @@ export default function Taskbar() {
                   smooth-transition
                 `}
                 aria-label={app.name}
+                title={window?.isMinimized ? `${app.name} (Minimized)` : app.name}
               >
-                <span className="text-xl">{app.icon}</span>
+                <span className={`text-xl ${window?.isMinimized ? 'opacity-60' : ''}`}>
+                  {app.icon}
+                </span>
+                {/* Active window - full underline */}
                 {isActive && (
                   <div className="absolute bottom-0 w-6 h-0.5 bg-blue-500 dark:bg-blue-400 rounded-t" />
+                )}
+                {/* Minimized window - dotted underline */}
+                {isRunning && window.isMinimized && (
+                  <div className="absolute bottom-0 w-6 h-0.5 bg-blue-500/50 dark:bg-blue-400/50 rounded-t"
+                       style={{ backgroundImage: 'linear-gradient(to right, currentColor 50%, transparent 50%)', backgroundSize: '4px 100%' }} />
                 )}
               </motion.button>
             )
@@ -121,25 +139,38 @@ export default function Taskbar() {
                 (app) => app.isPinned && app.type === w.appType
               )
           )
-          .map((window) => (
-            <motion.button
-              key={window.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleAppClick(window.id)}
-              className={`
-                w-12 h-10 flex items-center justify-center rounded relative
-                ${!window.isMinimized ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-white/10'}
-                smooth-transition
-              `}
-              aria-label={window.title}
-            >
-              <span className="text-xl">{window.icon}</span>
-              {!window.isMinimized && (
-                <div className="absolute bottom-0 w-6 h-0.5 bg-blue-500 dark:bg-blue-400 rounded-t" />
-              )}
-            </motion.button>
-          ))}
+          .map((window) => {
+            const isActive = !window.isMinimized && activeWindowId === window.id
+
+            return (
+              <motion.button
+                key={window.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleAppClick(window.id)}
+                className={`
+                  w-12 h-10 flex items-center justify-center rounded relative
+                  ${isActive ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-white/10'}
+                  smooth-transition
+                `}
+                aria-label={window.title}
+                title={window.isMinimized ? `${window.title} (Minimized)` : window.title}
+              >
+                <span className={`text-xl ${window.isMinimized ? 'opacity-60' : ''}`}>
+                  {window.icon}
+                </span>
+                {/* Active window - full underline */}
+                {isActive && (
+                  <div className="absolute bottom-0 w-6 h-0.5 bg-blue-500 dark:bg-blue-400 rounded-t" />
+                )}
+                {/* Minimized window - dotted underline */}
+                {window.isMinimized && (
+                  <div className="absolute bottom-0 w-6 h-0.5 bg-blue-500/50 dark:bg-blue-400/50 rounded-t"
+                       style={{ backgroundImage: 'linear-gradient(to right, currentColor 50%, transparent 50%)', backgroundSize: '4px 100%' }} />
+                )}
+              </motion.button>
+            )
+          })}
       </div>
 
       {/* System Tray */}
