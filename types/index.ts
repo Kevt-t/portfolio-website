@@ -12,6 +12,7 @@ export interface FileSystemItem {
   size?: number
   target?: string // For shortcuts
   children?: FileSystemItem[]
+  readOnly?: boolean
   metadata?: {
     description?: string
     tags?: string[]

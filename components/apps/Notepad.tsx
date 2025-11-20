@@ -9,6 +9,7 @@ interface NotepadProps {
 
 export default function Notepad({ file }: NotepadProps) {
   const [content, setContent] = useState('')
+  const isReadOnly = file?.readOnly || false
 
   useEffect(() => {
     if (file?.content) {
@@ -38,8 +39,13 @@ export default function Notepad({ file }: NotepadProps) {
       {/* Text Area */}
       <textarea
         value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="flex-1 p-4 font-mono text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 resize-none focus:outline-none"
+        onChange={(e) => !isReadOnly && setContent(e.target.value)}
+        readOnly={isReadOnly}
+        className={`
+          flex-1 p-4 font-mono text-sm bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 
+          resize-none focus:outline-none
+          ${isReadOnly ? 'cursor-default' : 'cursor-text'}
+        `}
         placeholder="Start typing..."
         spellCheck={false}
       />
@@ -47,9 +53,12 @@ export default function Notepad({ file }: NotepadProps) {
       {/* Status Bar */}
       <div className="flex items-center justify-between px-3 py-1 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800">
         <span>{file?.name || 'Untitled'}</span>
-        <span>
-          {content.split('\n').length} lines | {content.length} characters
-        </span>
+        <div className="flex gap-4">
+          {isReadOnly && <span>Read Only</span>}
+          <span>
+            {content.split('\n').length} lines | {content.length} characters
+          </span>
+        </div>
       </div>
     </div>
   )

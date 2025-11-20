@@ -19,35 +19,29 @@ export const fileSystem: FileSystemItem[] = [
         dateCreated: new Date('2024-01-01'),
         dateModified: new Date('2024-01-10'),
         size: 1024,
+        readOnly: true,
         content: `My Interests and Passions
 =============================
 
-Technology & Development
-- Full-stack web development
-- User experience design
-- Performance optimization
-- Cloud architecture
-- AI and machine learning
-
-Creative Pursuits
-- UI/UX design
-- Digital art and graphics
-- Photography
-- Writing technical blogs
-- Open source contributions
-
-Learning & Growth
-- Continuous learning new technologies
-- Teaching and mentoring others
-- Building side projects
+Creative Pursuits                   ******       ******
+- UI/UX design                    **      **   **      **
+- Digital art and graphics       **        ** **        **
+- Photography                    **         ***         **
+- Writing                         **         *         **
+                                   **                 **
+                                    **               **
+Learning & Growth                     **           **
+- Continuous learning                   **       **
+- Teaching and mentoring                  **   **
+- Building side projects                    ***
 - Contributing to developer communities
 - Attending tech conferences and meetups
 
 Outside Tech
-- Reading science fiction and tech books
+- Love diving into sci-fi movies and books
 - Hiking and outdoor activities
 - Coffee enthusiast
-- Music production
+- Boxing
 - Gaming`,
       },
       {
@@ -91,6 +85,7 @@ Outside Tech
         dateCreated: new Date('2024-01-01'),
         dateModified: new Date('2024-01-12'),
         size: 1536,
+        readOnly: true,
         content: `# My Development Philosophy
 
 ## Code is Communication
@@ -217,6 +212,7 @@ Before jumping to code, I invest time in understanding the problem deeply. The r
             dateCreated: new Date('2022-01-01'),
             dateModified: new Date('2024-01-01'),
             size: 2048,
+            readOnly: true,
             metadata: {
               company: 'TechCorp Inc',
               role: 'Senior Full Stack Developer',
@@ -263,6 +259,7 @@ Technologies:
             dateCreated: new Date('2020-01-01'),
             dateModified: new Date('2021-12-31'),
             size: 1536,
+            readOnly: true,
             metadata: {
               company: 'StartupXYZ',
               role: 'Full Stack Developer',
@@ -308,6 +305,7 @@ Technologies:
             dateCreated: new Date('2018-06-01'),
             dateModified: new Date('2019-12-31'),
             size: 1024,
+            readOnly: true,
             metadata: {
               company: 'Digital Agency Co',
               role: 'Frontend Developer',
