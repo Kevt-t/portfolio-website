@@ -38,7 +38,7 @@ export default function WindowPreview({ windows, position }: WindowPreviewProps)
       className="fixed z-[60] pointer-events-auto"
       style={{
         left: Math.max(8, Math.min(adjustedX, window.innerWidth - previewWidth - 8)),
-        bottom: 60, // Above taskbar
+        bottom: 52, // Closer to taskbar to reduce gap
       }}
     >
       <div className="bg-win11-taskbar-light dark:bg-win11-taskbar-dark backdrop-blur-win11 rounded-win11 win11-shadow border border-gray-200/50 dark:border-gray-700/50 p-3">
@@ -47,15 +47,15 @@ export default function WindowPreview({ windows, position }: WindowPreviewProps)
             const isActive = activeWindowId === window.id && !window.isMinimized
 
             return (
-              <motion.button
+              <motion.div
                 key={window.id}
                 whileHover={{ scale: 1.05, y: -2 }}
-                onClick={() => handleWindowClick(window)}
                 className={`
-                  relative flex flex-col w-44 rounded-win11-sm overflow-hidden
+                  relative flex flex-col w-44 rounded-win11-sm overflow-hidden cursor-pointer group
                   ${isActive ? 'ring-2 ring-blue-500' : 'hover:ring-2 hover:ring-blue-300 dark:hover:ring-blue-600'}
                   smooth-transition
                 `}
+                onClick={() => handleWindowClick(window)}
               >
                 {/* Window Preview/Thumbnail */}
                 <div className={`
@@ -76,13 +76,14 @@ export default function WindowPreview({ windows, position }: WindowPreviewProps)
                   )}
 
                   {/* Close button */}
-                  <button
+                  <div
                     onClick={(e) => handleClose(e, window.id)}
-                    className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 hover:bg-red-600 rounded-sm flex items-center justify-center opacity-0 hover:opacity-100 group-hover:opacity-100 smooth-transition"
+                    className="absolute top-1 right-1 w-6 h-6 bg-red-500/80 hover:bg-red-600 rounded-sm flex items-center justify-center opacity-0 group-hover:opacity-100 smooth-transition cursor-pointer"
+                    role="button"
                     aria-label="Close"
                   >
                     <X className="w-3 h-3 text-white" />
-                  </button>
+                  </div>
                 </div>
 
                 {/* Window Title */}
@@ -91,7 +92,7 @@ export default function WindowPreview({ windows, position }: WindowPreviewProps)
                     {window.title}
                   </p>
                 </div>
-              </motion.button>
+              </motion.div>
             )
           })}
         </div>
