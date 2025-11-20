@@ -14,7 +14,10 @@ interface WindowProps {
 export default function Window({ window, children }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [isResizing, setIsResizing] = useState(false)
+  const [resizeDirection, setResizeDirection] = useState<string | null>(null)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
+  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, windowX: 0, windowY: 0 })
 
   const {
     setActiveWindow,
@@ -26,16 +29,53 @@ export default function Window({ window, children }: WindowProps) {
   } = useWindowStore()
 
   useEffect(() => {
-    if (!isDragging) return
+    if (!isDragging && !isResizing) return
 
     const handleMouseMove = (e: MouseEvent) => {
-      const newX = e.clientX - dragOffset.x
-      const newY = Math.max(0, e.clientY - dragOffset.y)
-      updateWindowPosition(window.id, { x: newX, y: newY })
+      if (isDragging) {
+        const newX = e.clientX - dragOffset.x
+        const newY = Math.max(0, e.clientY - dragOffset.y)
+        updateWindowPosition(window.id, { x: newX, y: newY })
+      } else if (isResizing && resizeDirection) {
+        let newWidth = resizeStart.width
+        let newHeight = resizeStart.height
+        let newX = resizeStart.windowX
+        let newY = resizeStart.windowY
+        const deltaX = e.clientX - resizeStart.x
+        const deltaY = e.clientY - resizeStart.y
+
+        if (resizeDirection.includes('e')) {
+          newWidth = Math.max(300, resizeStart.width + deltaX)
+        }
+        if (resizeDirection.includes('s')) {
+          newHeight = Math.max(200, resizeStart.height + deltaY)
+        }
+        if (resizeDirection.includes('w')) {
+          const proposedWidth = resizeStart.width - deltaX
+          if (proposedWidth >= 300) {
+            newWidth = proposedWidth
+            newX = resizeStart.windowX + deltaX
+          }
+        }
+        if (resizeDirection.includes('n')) {
+          const proposedHeight = resizeStart.height - deltaY
+          if (proposedHeight >= 200) {
+            newHeight = proposedHeight
+            newY = resizeStart.windowY + deltaY
+          }
+        }
+
+        updateWindowSize(window.id, { width: newWidth, height: newHeight })
+        if (newX !== resizeStart.windowX || newY !== resizeStart.windowY) {
+          updateWindowPosition(window.id, { x: newX, y: newY })
+        }
+      }
     }
 
     const handleMouseUp = () => {
       setIsDragging(false)
+      setIsResizing(false)
+      setResizeDirection(null)
     }
 
     document.addEventListener('mousemove', handleMouseMove)
@@ -45,12 +85,31 @@ export default function Window({ window, children }: WindowProps) {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [isDragging, dragOffset, window.id, updateWindowPosition])
+  }, [isDragging, isResizing, resizeDirection, dragOffset, resizeStart, window.id, updateWindowPosition, updateWindowSize])
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.window-title')) {
       const rect = windowRef.current?.getBoundingClientRect()
-      if (rect) {
+      
+      if (window.isMaximized && rect) {
+        // If maximized, we need to calculate where the mouse would be relative to the RESTORED window width
+        // Windows logic: Mouse stays at the same percentage across the width
+        const mouseXRatio = (e.clientX - rect.left) / rect.width
+        const newWidth = window.size.width
+        const newX = e.clientX - (newWidth * mouseXRatio)
+        
+        toggleMaximize(window.id)
+        // We need to defer the drag start slightly to let the state update
+        requestAnimationFrame(() => {
+          updateWindowPosition(window.id, { x: newX, y: e.clientY - (e.clientY - rect.top) }) // Keep Y relative to top
+          setDragOffset({
+            x: newWidth * mouseXRatio, // Offset is based on the new relative position
+            y: e.clientY - rect.top,
+          })
+          setIsDragging(true)
+          setActiveWindow(window.id)
+        })
+      } else if (rect) {
         setDragOffset({
           x: e.clientX - rect.left,
           y: e.clientY - rect.top,
@@ -63,6 +122,22 @@ export default function Window({ window, children }: WindowProps) {
 
   const handleDoubleClick = () => {
     toggleMaximize(window.id)
+  }
+
+  const handleResizeStart = (e: React.MouseEvent, direction: string) => {
+    e.stopPropagation()
+    e.preventDefault()
+    setIsResizing(true)
+    setResizeDirection(direction)
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: window.size.width,
+      height: window.size.height,
+      windowX: window.position.x,
+      windowY: window.position.y,
+    })
+    setActiveWindow(window.id)
   }
 
   if (window.isMinimized) {
@@ -94,7 +169,7 @@ export default function Window({ window, children }: WindowProps) {
     >
       {/* Title Bar */}
       <div
-        className="window-title flex items-center justify-between h-10 px-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 cursor-move no-select"
+        className="window-title flex items-center justify-between h-10 pl-3 pr-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 cursor-move no-select"
         onMouseDown={handleMouseDown}
         onDoubleClick={handleDoubleClick}
       >
@@ -104,17 +179,17 @@ export default function Window({ window, children }: WindowProps) {
             {window.title}
           </span>
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center h-full">
           <button
             onClick={() => toggleMinimize(window.id)}
-            className="w-11 h-8 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center justify-center smooth-transition"
+            className="w-12 h-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center smooth-transition"
             aria-label="Minimize"
           >
             <Minus className="w-4 h-4 text-gray-700 dark:text-gray-300" />
           </button>
           <button
             onClick={() => toggleMaximize(window.id)}
-            className="w-11 h-8 hover:bg-gray-100 dark:hover:bg-gray-700 rounded flex items-center justify-center smooth-transition"
+            className="w-12 h-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center smooth-transition"
             aria-label={window.isMaximized ? 'Restore' : 'Maximize'}
           >
             {window.isMaximized ? (
@@ -125,7 +200,7 @@ export default function Window({ window, children }: WindowProps) {
           </button>
           <button
             onClick={() => removeWindow(window.id)}
-            className="w-11 h-8 hover:bg-red-500 hover:text-white rounded flex items-center justify-center smooth-transition"
+            className="w-12 h-full hover:bg-red-500 hover:text-white flex items-center justify-center smooth-transition"
             aria-label="Close"
           >
             <X className="w-4 h-4" />
@@ -135,6 +210,47 @@ export default function Window({ window, children }: WindowProps) {
 
       {/* Window Content */}
       <div className="flex-1 overflow-auto">{children}</div>
+
+      {/* Resize Handles */}
+      {!window.isMaximized && (
+        <>
+          {/* Corners */}
+          <div
+            className="absolute top-0 left-0 w-4 h-4 cursor-nw-resize z-50"
+            onMouseDown={(e) => handleResizeStart(e, 'nw')}
+          />
+          <div
+            className="absolute top-0 right-0 w-4 h-4 cursor-ne-resize z-50"
+            onMouseDown={(e) => handleResizeStart(e, 'ne')}
+          />
+          <div
+            className="absolute bottom-0 left-0 w-4 h-4 cursor-sw-resize z-50"
+            onMouseDown={(e) => handleResizeStart(e, 'sw')}
+          />
+          <div
+            className="absolute bottom-0 right-0 w-4 h-4 cursor-se-resize z-50"
+            onMouseDown={(e) => handleResizeStart(e, 'se')}
+          />
+
+          {/* Edges */}
+          <div
+            className="absolute top-0 left-4 right-4 h-2 cursor-n-resize z-40"
+            onMouseDown={(e) => handleResizeStart(e, 'n')}
+          />
+          <div
+            className="absolute bottom-0 left-4 right-4 h-2 cursor-s-resize z-40"
+            onMouseDown={(e) => handleResizeStart(e, 's')}
+          />
+          <div
+            className="absolute left-0 top-4 bottom-4 w-2 cursor-w-resize z-40"
+            onMouseDown={(e) => handleResizeStart(e, 'w')}
+          />
+          <div
+            className="absolute right-0 top-4 bottom-4 w-2 cursor-e-resize z-40"
+            onMouseDown={(e) => handleResizeStart(e, 'e')}
+          />
+        </>
+      )}
     </motion.div>
   )
 }

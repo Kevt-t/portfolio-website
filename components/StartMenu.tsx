@@ -127,10 +127,10 @@ export default function StartMenu() {
           <div className="absolute bottom-0 left-0 right-0 h-14 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 flex items-center justify-between px-6">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center text-white text-sm font-semibold">
-                JD
+                KT
               </div>
               <span className="text-sm text-gray-700 dark:text-gray-300 font-medium">
-                John Developer
+                Kevin Tellez-Torres
               </span>
             </div>
             <div className="flex items-center gap-2">

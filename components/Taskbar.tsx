@@ -18,11 +18,15 @@ export default function Taskbar() {
   const [hoveredApp, setHoveredApp] = useState<AppType | null>(null)
   const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 })
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current)
+      }
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current)
       }
     }
   }, [])
@@ -81,6 +85,10 @@ export default function Taskbar() {
       if (hoverTimeoutRef.current) {
         clearTimeout(hoverTimeoutRef.current)
       }
+      if (hideTimeoutRef.current) {
+        clearTimeout(hideTimeoutRef.current)
+        hideTimeoutRef.current = null
+      }
 
       // Delay before showing preview (like Windows 11)
       hoverTimeoutRef.current = setTimeout(() => {
@@ -99,7 +107,11 @@ export default function Taskbar() {
       clearTimeout(hoverTimeoutRef.current)
       hoverTimeoutRef.current = null
     }
-    setHoveredApp(null)
+    
+    // Delay hiding to allow moving to preview
+    hideTimeoutRef.current = setTimeout(() => {
+      setHoveredApp(null)
+    }, 200)
   }
 
   const formatTime = () => {
@@ -121,7 +133,7 @@ export default function Taskbar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-12 flex items-center justify-center z-50">
+    <div className="fixed bottom-0 left-0 right-0 h-12 flex items-center justify-center z-[9999]">
       {/* Taskbar Background */}
       <div className="absolute inset-0 bg-win11-taskbar-light dark:bg-win11-taskbar-dark backdrop-blur-win11" />
 
@@ -296,6 +308,10 @@ export default function Taskbar() {
             onMouseEnter={() => {
               if (hoverTimeoutRef.current) {
                 clearTimeout(hoverTimeoutRef.current)
+              }
+              if (hideTimeoutRef.current) {
+                clearTimeout(hideTimeoutRef.current)
+                hideTimeoutRef.current = null
               }
             }}
             onMouseLeave={handleMouseLeave}

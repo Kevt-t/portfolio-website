@@ -75,10 +75,14 @@ export default function Desktop() {
 
   return (
     <div
-      className="relative w-full h-full bg-gradient-to-br from-blue-400 via-purple-500 to-pink-500 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900"
+      className="relative w-full h-full bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: "url('/wallpapers/eagles.webp')" }}
       onClick={handleDesktopClick}
       onContextMenu={handleDesktopContextMenu}
     >
+      {/* Overlay for better text readability if needed, or just the raw image */}
+      <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+
       {/* Desktop Icons Grid */}
       <div className="p-4 grid grid-cols-auto-fill gap-4 auto-rows-max">
         {desktopItems.map((item, index) => (
