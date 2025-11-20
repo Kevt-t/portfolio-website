@@ -20,6 +20,30 @@ export default function Taskbar() {
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Portrait-aware window sizing
+  const getResponsiveWindowSize = () => {
+    const vw = globalThis.innerWidth
+    const vh = globalThis.innerHeight
+    const isPortrait = vh > vw
+
+    if (isPortrait && vw < 768) {
+      return {
+        width: Math.min(vw - 40, 500),
+        height: Math.min(vh - 120, 550),
+        x: 20,
+        y: 20
+      }
+    } else if (vw < 768) {
+      return {
+        width: Math.min(vw - 60, 650),
+        height: Math.min(vh - 100, 450),
+        x: 30,
+        y: 20
+      }
+    }
+    return { width: 800, height: 600, x: 150, y: 100 }
+  }
+
   useEffect(() => {
     return () => {
       if (hoverTimeoutRef.current) {
@@ -55,6 +79,7 @@ export default function Taskbar() {
     if (appWindows.length === 0) {
       const app = installedApps.find(a => a.type === appType)
       if (app) {
+        const windowSize = getResponsiveWindowSize()
         addWindow({
           id: `${appType}-${Date.now()}`,
           title: app.name,
@@ -62,8 +87,8 @@ export default function Taskbar() {
           appType: appType,
           isMaximized: false,
           isMinimized: false,
-          position: { x: 150, y: 100 },
-          size: { width: 800, height: 600 },
+          position: { x: windowSize.x, y: windowSize.y },
+          size: { width: windowSize.width, height: windowSize.height },
         })
       }
     } else if (appWindows.length === 1) {
@@ -147,26 +172,26 @@ export default function Taskbar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-12 flex items-center justify-center z-[9999]">
+    <div className="fixed bottom-0 left-0 right-0 h-12 sm:h-12 flex items-center justify-center z-[9999]">
       {/* Taskbar Background */}
       <div className="absolute inset-0 bg-win11-taskbar-light dark:bg-win11-taskbar-dark backdrop-blur-win11" />
 
       {/* Taskbar Content */}
-      <div className="relative flex items-center gap-1 px-2">
+      <div className="relative flex items-center gap-0.5 sm:gap-1 pl-1 pr-14 sm:px-2">
         {/* Start Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={toggleStartMenu}
           className={`
-            w-12 h-10 flex items-center justify-center rounded
+            min-w-[44px] min-h-[44px] sm:w-12 sm:h-10 flex items-center justify-center rounded
             ${isStartMenuOpen ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-white/10'}
             smooth-transition
           `}
           aria-label="Start"
         >
           <svg
-            className="w-6 h-6 text-blue-500 dark:text-blue-400"
+            className="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 dark:text-blue-400"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
@@ -177,11 +202,11 @@ export default function Taskbar() {
           </svg>
         </motion.button>
 
-        {/* Search Button */}
+        {/* Search Button - Hidden on mobile */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="w-12 h-10 flex items-center justify-center rounded hover:bg-white/10 smooth-transition"
+          className="hidden sm:flex w-12 h-10 items-center justify-center rounded hover:bg-white/10 smooth-transition"
           aria-label="Search"
         >
           <Search className="w-5 h-5 text-gray-700 dark:text-gray-300" />
@@ -207,14 +232,14 @@ export default function Taskbar() {
                 onMouseEnter={(e) => handleMouseEnter(app.type, e)}
                 onMouseLeave={handleMouseLeave}
                 className={`
-                  w-12 h-10 flex items-center justify-center rounded relative
+                  min-w-[44px] min-h-[44px] sm:w-12 sm:h-10 flex items-center justify-center rounded relative
                   ${isAnyActive ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-white/10'}
                   smooth-transition
                 `}
                 aria-label={app.name}
                 title={hasMultipleWindows ? `${app.name} (${appWindows.length} windows)` : (firstWindow?.isMinimized ? `${app.name} (Minimized)` : app.name)}
               >
-                <span className={`text-xl ${hasMinimized && !isAnyActive ? 'opacity-60' : ''}`}>
+                <span className={`text-lg sm:text-xl ${hasMinimized && !isAnyActive ? 'opacity-60' : ''}`}>
                   {app.icon}
                 </span>
                 {/* Active window - full underline */}
@@ -256,14 +281,14 @@ export default function Taskbar() {
                 onMouseEnter={(e) => handleMouseEnter(appType, e)}
                 onMouseLeave={handleMouseLeave}
                 className={`
-                  w-12 h-10 flex items-center justify-center rounded relative
+                  min-w-[44px] min-h-[44px] sm:w-12 sm:h-10 flex items-center justify-center rounded relative
                   ${isAnyActive ? 'bg-blue-100 dark:bg-blue-900' : 'hover:bg-white/10'}
                   smooth-transition
                 `}
                 aria-label={firstWindow.title}
                 title={hasMultipleWindows ? `${firstWindow.title.split(' - ')[1] || firstWindow.title} (${appWindows.length} windows)` : (firstWindow.isMinimized ? `${firstWindow.title} (Minimized)` : firstWindow.title)}
               >
-                <span className={`text-xl ${hasMinimized && !isAnyActive ? 'opacity-60' : ''}`}>
+                <span className={`text-lg sm:text-xl ${hasMinimized && !isAnyActive ? 'opacity-60' : ''}`}>
                   {firstWindow.icon}
                 </span>
                 {/* Active window - full underline */}
@@ -285,33 +310,33 @@ export default function Taskbar() {
       </div>
 
       {/* System Tray */}
-      <div className="absolute right-0 flex items-center gap-2 px-3 h-full">
+      <div className="absolute right-0 flex items-center gap-1 sm:gap-2 px-1 sm:px-3 h-full">
         {/* Theme Toggle */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={toggleTheme}
-          className="hover:bg-white/10 rounded p-1 smooth-transition"
+          className="hover:bg-white/10 rounded p-1 sm:p-1 touch-target smooth-transition"
           aria-label="Toggle theme"
         >
           {theme === 'dark' ? (
-            <Sun className="w-4 h-4 text-yellow-400" />
+            <Sun className="w-4 h-4 sm:w-4 sm:h-4 text-yellow-400" />
           ) : (
-            <Moon className="w-4 h-4 text-gray-700" />
+            <Moon className="w-4 h-4 sm:w-4 sm:h-4 text-gray-700" />
           )}
         </motion.button>
 
-        {/* System Icons */}
-        <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+        {/* System Icons - Hidden on small mobile */}
+        <div className="hidden md:flex items-center gap-2 text-gray-700 dark:text-gray-300">
           <Wifi className="w-4 h-4" />
           <Volume2 className="w-4 h-4" />
           <BatteryFull className="w-4 h-4" />
         </div>
 
         {/* Date & Time */}
-        <div className="text-xs text-gray-700 dark:text-gray-300 ml-2 flex flex-col items-end no-select">
+        <div className="text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 ml-1 sm:ml-2 flex flex-col items-end no-select">
           <span className="font-medium">{formatTime()}</span>
-          <span>{formatDate()}</span>
+          <span className="hidden sm:inline">{formatDate()}</span>
         </div>
       </div>
 

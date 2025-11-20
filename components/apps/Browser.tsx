@@ -11,13 +11,13 @@ export default function Browser() {
       {/* Browser Controls */}
       <div className="flex items-center gap-2 p-2 border-b border-gray-200 dark:border-gray-700">
         <button
-          className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 smooth-transition"
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 smooth-transition"
           aria-label="Refresh"
         >
           <RefreshCw className="w-4 h-4 text-gray-600 dark:text-gray-400" />
         </button>
         <button
-          className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 smooth-transition"
+          className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded hover:bg-gray-100 dark:hover:bg-gray-800 smooth-transition"
           aria-label="Home"
         >
           <Home className="w-4 h-4 text-gray-600 dark:text-gray-400" />

@@ -5,6 +5,9 @@
 @layer base {
   body {
     @apply overflow-hidden w-screen h-screen;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    touch-action: pan-x pan-y;
   }
 
   /* Custom scrollbar styling */
@@ -61,5 +64,39 @@
   /* Smooth transitions */
   .smooth-transition {
     @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Touch-friendly utilities */
+  .touch-target {
+    @apply min-w-[44px] min-h-[44px];
+  }
+
+  /* Hide scrollbar on mobile for cleaner UI */
+  @media (max-width: 768px) {
+    .mobile-hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .mobile-hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  }
+
+  /* Portrait orientation optimizations */
+  @media (orientation: portrait) and (max-width: 768px) {
+    /* Reduce taskbar height in portrait for more vertical space */
+    .portrait-taskbar {
+      height: 48px;
+    }
+
+    /* Optimize desktop grid for portrait */
+    .portrait-desktop-grid {
+      padding-bottom: 60px; /* Extra space for taskbar */
+    }
+
+    /* Start menu takes more vertical space in portrait */
+    .portrait-start-menu {
+      max-height: calc(100vh - 80px);
+    }
   }
 }

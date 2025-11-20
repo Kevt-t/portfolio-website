@@ -118,20 +118,20 @@ Before jumping to code, I invest time in understanding the problem deeply. The r
     dateModified: new Date('2024-02-01'),
     children: [
       {
-        id: 'project-ecommerce',
-        name: 'E-Commerce Platform.exe',
+        id: 'project-behavioral-log',
+        name: 'AI Behavioral Log Assistant.exe',
         type: 'exe',
-        path: '/Desktop/Projects/E-Commerce Platform.exe',
-        dateCreated: new Date('2023-06-01'),
-        dateModified: new Date('2023-09-15'),
-        size: 15360000,
+        path: '/Desktop/Projects/AI Behavioral Log Assistant.exe',
+        dateCreated: new Date('2024-06-01'),
+        dateModified: new Date('2024-12-15'),
+        size: 8192000,
         metadata: {
           description:
-            'A full-stack e-commerce platform with real-time inventory management, payment processing, and admin dashboard. Features include product search, filtering, shopping cart, and order tracking.',
-          technologies: ['Next.js', 'TypeScript', 'Node.js', 'PostgreSQL', 'Stripe', 'Redis', 'AWS'],
-          projectUrl: 'https://demo-ecommerce.example.com',
-          githubUrl: 'https://github.com/username/ecommerce-platform',
-          tags: ['Full Stack', 'E-Commerce', 'Real-time'],
+            'Production AI-powered SaaS app for ed tech serving 1000+ users across multiple schools. Uses LLM chatbot to restructure behavioral incident reports into objective, unbiased language. Reduces documentation bias and saves teacher time while maintaining compliance with educational standards.',
+          technologies: ['Next.js', 'TypeScript', 'AWS SES', 'PostgreSQL', 'Zod', 'Playlab API', 'Google OAuth', 'Docker'],
+          projectUrl: '',
+          githubUrl: '',
+          tags: ['AI/ML', 'Production Scale', 'Full-Stack', 'Ed Tech SaaS'],
         },
       },
       {
