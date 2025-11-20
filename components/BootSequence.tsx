@@ -81,24 +81,6 @@ export default function BootSequence() {
             />
           </div>
 
-          {/* Loading Dots */}
-          <div className="flex gap-2 mt-8">
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                className="w-2 h-2 bg-blue-500 rounded-full"
-                animate={{
-                  opacity: [0.3, 1, 0.3],
-                  scale: [0.8, 1, 0.8],
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  delay: i * 0.2,
-                }}
-              />
-            ))}
-          </div>
         </motion.div>
       )}
     </AnimatePresence>

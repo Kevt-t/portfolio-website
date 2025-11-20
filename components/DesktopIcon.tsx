@@ -12,7 +12,14 @@ interface DesktopIconProps {
 const getIcon = (type: string, name: string) => {
   switch (type) {
     case 'folder':
-      return <Folder className="w-12 h-12 text-yellow-400" />
+      return (
+        <div className="relative w-12 h-12">
+          {/* Papers inside folder */}
+          <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-8 h-8 bg-gray-100 border border-gray-300 rounded-sm rotate-6" />
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-white border border-gray-300 rounded-sm -rotate-3" />
+          <Folder className="relative z-10 w-12 h-12 text-yellow-400 fill-yellow-400" />
+        </div>
+      )
     case 'exe':
       return <div className="text-4xl">💼</div>
     case 'txt':
@@ -25,7 +32,10 @@ const getIcon = (type: string, name: string) => {
       return <File className="w-12 h-12 text-red-400" />
     case 'shortcut':
       return name === 'This PC' ? (
-        <Monitor className="w-12 h-12 text-blue-400" />
+        <div className="relative w-12 h-12">
+          <div className="absolute left-1 top-1.5 w-10 h-7 bg-white rounded-[2px]" />
+          <Monitor className="relative z-10 w-12 h-12 text-blue-400" />
+        </div>
       ) : (
         <Link className="w-12 h-12 text-blue-400" />
       )
