@@ -137,7 +137,7 @@ export default function Desktop() {
       <div className="absolute inset-0 bg-black/10 pointer-events-none" />
 
       {/* Desktop Icons Grid - Responsive with portrait optimization */}
-      <div className="relative z-0 p-2 sm:p-4 w-full h-full overflow-y-auto mobile-hide-scrollbar grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 auto-rows-[75px] sm:auto-rows-[85px] md:auto-rows-[100px] gap-1 sm:gap-2 pb-16 justify-items-center md:justify-items-start">
+      <div className="relative z-0 p-2 sm:p-4 w-full h-full overflow-y-auto mobile-hide-scrollbar grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-12 auto-rows-[75px] sm:auto-rows-[85px] md:auto-rows-[100px] gap-1 sm:gap-2 pb-16 justify-items-center md:justify-items-start pl-safe pr-safe pt-safe">
         {desktopItems.map((item, index) => (
           <motion.div
             key={item.id}

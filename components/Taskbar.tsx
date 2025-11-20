@@ -172,12 +172,12 @@ export default function Taskbar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-12 sm:h-12 flex items-center justify-center z-[9999]">
+    <div className="fixed bottom-0 left-0 right-0 h-12 sm:h-12 flex items-center justify-center z-[9999] pb-safe">
       {/* Taskbar Background */}
       <div className="absolute inset-0 bg-win11-taskbar-light dark:bg-win11-taskbar-dark backdrop-blur-win11" />
 
       {/* Taskbar Content */}
-      <div className="relative flex items-center gap-0.5 sm:gap-1 pl-1 pr-14 sm:px-2">
+      <div className="relative flex items-center gap-0.5 sm:gap-1 pl-1 pr-14 sm:px-2 pl-safe pr-safe">
         {/* Start Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}

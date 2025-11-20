@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply overflow-hidden w-screen h-screen;
+    @apply overflow-hidden w-screen h-screen bg-win11-bg-light dark:bg-win11-bg-dark;
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
     touch-action: pan-x pan-y;
@@ -29,6 +29,20 @@
 }
 
 @layer utilities {
+  /* Safe Area Utilities */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pl-safe {
+    padding-left: env(safe-area-inset-left);
+  }
+  .pr-safe {
+    padding-right: env(safe-area-inset-right);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
   /* Windows 11 Acrylic Effect */
   .acrylic {
     @apply backdrop-blur-win11 bg-opacity-70 dark:bg-opacity-70;
