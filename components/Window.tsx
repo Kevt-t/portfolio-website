@@ -15,9 +15,11 @@ export default function Window({ window, children }: WindowProps) {
   const windowRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isResizing, setIsResizing] = useState(false)
+  const [isPinching, setIsPinching] = useState(false)
   const [resizeDirection, setResizeDirection] = useState<string | null>(null)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0, windowX: 0, windowY: 0 })
+  const [pinchStart, setPinchStart] = useState({ dist: 0, width: 0, height: 0, x: 0, y: 0 })
 
   const {
     setActiveWindow,
@@ -29,7 +31,7 @@ export default function Window({ window, children }: WindowProps) {
   } = useWindowStore()
 
   useEffect(() => {
-    if (!isDragging && !isResizing) return
+    if (!isDragging && !isResizing && !isPinching) return
 
     const minWidth = globalThis.innerWidth < 640 ? 250 : 300 // Smaller min on mobile
     const minHeight = globalThis.innerWidth < 640 ? 150 : 200
@@ -76,8 +78,28 @@ export default function Window({ window, children }: WindowProps) {
     }
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (isDragging || isResizing) {
+      if (isDragging || isResizing || isPinching) {
         e.preventDefault() // Prevent scrolling while dragging/resizing
+      }
+
+      if (isPinching && e.touches.length === 2) {
+        const touch1 = e.touches[0]
+        const touch2 = e.touches[1]
+        const dist = Math.hypot(touch1.clientX - touch2.clientX, touch1.clientY - touch2.clientY)
+        
+        const scale = dist / pinchStart.dist
+        const newWidth = Math.max(minWidth, pinchStart.width * scale)
+        const newHeight = Math.max(minHeight, pinchStart.height * scale)
+        
+        // Center resize around the window center
+        const deltaW = newWidth - pinchStart.width
+        const deltaH = newHeight - pinchStart.height
+        const newX = pinchStart.x - deltaW / 2
+        const newY = pinchStart.y - deltaH / 2
+
+        updateWindowSize(window.id, { width: newWidth, height: newHeight })
+        updateWindowPosition(window.id, { x: newX, y: newY })
+        return
       }
 
       const touch = e.touches[0]
@@ -126,6 +148,7 @@ export default function Window({ window, children }: WindowProps) {
     const handleEnd = () => {
       setIsDragging(false)
       setIsResizing(false)
+      setIsPinching(false)
       setResizeDirection(null)
     }
 
@@ -140,7 +163,7 @@ export default function Window({ window, children }: WindowProps) {
       document.removeEventListener('touchmove', handleTouchMove)
       document.removeEventListener('touchend', handleEnd)
     }
-  }, [isDragging, isResizing, resizeDirection, dragOffset, resizeStart, window.id, updateWindowPosition, updateWindowSize])
+  }, [isDragging, isResizing, isPinching, resizeDirection, dragOffset, resizeStart, pinchStart, window.id, updateWindowPosition, updateWindowSize])
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget || (e.target as HTMLElement).closest('.window-title')) {
@@ -176,6 +199,26 @@ export default function Window({ window, children }: WindowProps) {
   }
 
   const handleTouchStart = (e: React.TouchEvent) => {
+    // Check for pinch first
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0]
+      const touch2 = e.touches[1]
+      const dist = Math.hypot(touch1.clientX - touch2.clientX, touch1.clientY - touch2.clientY)
+      
+      setIsPinching(true)
+      setIsDragging(false)
+      setIsResizing(false)
+      
+      setPinchStart({
+        dist,
+        width: window.size.width,
+        height: window.size.height,
+        x: window.position.x,
+        y: window.position.y,
+      })
+      return
+    }
+
     const touch = e.touches[0]
     if (!touch) return
 
@@ -205,6 +248,27 @@ export default function Window({ window, children }: WindowProps) {
         setIsDragging(true)
         setActiveWindow(window.id)
       }
+    }
+  }
+
+  const handleContentTouchStart = (e: React.TouchEvent) => {
+    setActiveWindow(window.id)
+    if (e.touches.length === 2) {
+      const touch1 = e.touches[0]
+      const touch2 = e.touches[1]
+      const dist = Math.hypot(touch1.clientX - touch2.clientX, touch1.clientY - touch2.clientY)
+      
+      setIsPinching(true)
+      setIsDragging(false)
+      setIsResizing(false)
+      
+      setPinchStart({
+        dist,
+        width: window.size.width,
+        height: window.size.height,
+        x: window.position.x,
+        y: window.position.y,
+      })
     }
   }
 
@@ -273,6 +337,7 @@ export default function Window({ window, children }: WindowProps) {
         zIndex: window.zIndex,
       }}
       onMouseDown={() => setActiveWindow(window.id)}
+      onTouchStart={handleContentTouchStart}
     >
       {/* Title Bar */}
       <div
