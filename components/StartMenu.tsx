@@ -57,11 +57,11 @@ export default function StartMenu() {
       {isStartMenuOpen && (
         <motion.div
           ref={menuRef}
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.95 }}
+          initial={{ opacity: 0, y: 20, x: "-50%", scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
+          exit={{ opacity: 0, y: 20, x: "-50%", scale: 0.95 }}
           transition={{ duration: 0.15 }}
-          className="fixed bottom-16 left-1/2 transform -translate-x-1/2 w-[600px] h-[660px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-win11 rounded-win11 win11-shadow border border-gray-200/50 dark:border-gray-700/50 overflow-hidden z-40"
+          className="fixed bottom-16 left-1/2 w-[540px] h-[600px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-win11 rounded-win11 win11-shadow border border-gray-200/50 dark:border-gray-700/50 overflow-hidden z-40"
         >
           {/* Search Bar */}
           <div className="p-6 pb-4">

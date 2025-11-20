@@ -3,105 +3,69 @@
 import { useState } from 'react'
 import { Delete } from 'lucide-react'
 
+const Button = ({ children, onClick, className = '', span = false }: any) => (
+  <button
+    onClick={onClick}
+    className={`
+      ${span ? 'col-span-2' : ''} h-14 rounded-win11-sm
+      bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
+      text-gray-800 dark:text-gray-200 font-medium smooth-transition
+      active:scale-95 ${className}
+    `}
+  >
+    {children}
+  </button>
+)
+
 export default function Calculator() {
   const [display, setDisplay] = useState('0')
-  const [previousValue, setPreviousValue] = useState<number | null>(null)
-  const [operation, setOperation] = useState<string | null>(null)
-  const [shouldResetDisplay, setShouldResetDisplay] = useState(false)
+  const [easterEggClicks, setEasterEggClicks] = useState(0)
+
+  const easterEggMessages = [
+    "There's more interesting things ya know",
+    "This is the least cool thing here",
+    "Ok you're getting the silent treatment now",
+    "..."
+  ]
+
+  const handleEasterEggClick = () => {
+    const messageIndex = Math.min(easterEggClicks, easterEggMessages.length - 1)
+    setDisplay(easterEggMessages[messageIndex])
+    setEasterEggClicks(easterEggClicks + 1)
+  }
 
   const handleNumber = (num: string) => {
-    if (shouldResetDisplay) {
-      setDisplay(num)
-      setShouldResetDisplay(false)
-    } else {
-      setDisplay(display === '0' ? num : display + num)
-    }
+    handleEasterEggClick()
   }
 
   const handleOperation = (op: string) => {
-    const current = parseFloat(display)
-
-    if (previousValue !== null && operation && !shouldResetDisplay) {
-      calculate()
-    } else {
-      setPreviousValue(current)
-    }
-
-    setOperation(op)
-    setShouldResetDisplay(true)
+    handleEasterEggClick()
   }
 
   const calculate = () => {
-    if (previousValue === null || operation === null) return
-
-    const current = parseFloat(display)
-    let result = 0
-
-    switch (operation) {
-      case '+':
-        result = previousValue + current
-        break
-      case '-':
-        result = previousValue - current
-        break
-      case '×':
-        result = previousValue * current
-        break
-      case '÷':
-        result = current !== 0 ? previousValue / current : 0
-        break
-    }
-
-    setDisplay(result.toString())
-    setPreviousValue(null)
-    setOperation(null)
-    setShouldResetDisplay(true)
+    handleEasterEggClick()
   }
 
   const handleClear = () => {
-    setDisplay('0')
-    setPreviousValue(null)
-    setOperation(null)
-    setShouldResetDisplay(false)
+    handleEasterEggClick()
   }
 
   const handleBackspace = () => {
-    if (display.length > 1) {
-      setDisplay(display.slice(0, -1))
-    } else {
-      setDisplay('0')
-    }
+    handleEasterEggClick()
   }
 
   const handleDecimal = () => {
-    if (!display.includes('.')) {
-      setDisplay(display + '.')
-      setShouldResetDisplay(false)
-    }
+    handleEasterEggClick()
   }
-
-  const Button = ({ children, onClick, className = '', span = false }: any) => (
-    <button
-      onClick={onClick}
-      className={`
-        ${span ? 'col-span-2' : ''} h-14 rounded-win11-sm
-        bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
-        text-gray-800 dark:text-gray-200 font-medium smooth-transition
-        active:scale-95 ${className}
-      `}
-    >
-      {children}
-    </button>
-  )
 
   return (
     <div className="flex flex-col h-full bg-white dark:bg-gray-900 p-4">
       {/* Display */}
       <div className="mb-4 p-6 bg-gray-50 dark:bg-gray-800 rounded-win11 text-right">
         <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 h-4">
-          {previousValue !== null && operation ? `${previousValue} ${operation}` : ''}
+          {/* Placeholder for operation history if needed */}
         </div>
-        <div className="text-4xl font-light text-gray-800 dark:text-gray-200 truncate">
+        <div className="text-4xl font-light text-gray-800 dark:text-gray-200 truncate pb-1">
           {display}
         </div>
       </div>

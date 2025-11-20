@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Wifi, Volume2, Battery, Moon, Sun } from 'lucide-react'
+import { Search, Wifi, Volume2, BatteryFull, Moon, Sun } from 'lucide-react'
 import { useWindowStore } from '@/store/useWindowStore'
 import { useUIStore } from '@/store/useUIStore'
 import { useThemeStore } from '@/store/useThemeStore'
@@ -11,7 +11,7 @@ import WindowPreview from './WindowPreview'
 import { AppType } from '@/types'
 
 export default function Taskbar() {
-  const { windows, toggleMinimize, setActiveWindow, activeWindowId } = useWindowStore()
+  const { windows, toggleMinimize, setActiveWindow, activeWindowId, addWindow } = useWindowStore()
   const { toggleStartMenu, isStartMenuOpen } = useUIStore()
   const { theme, toggleTheme } = useThemeStore()
 
@@ -52,7 +52,21 @@ export default function Taskbar() {
   const handleAppGroupClick = (appType: AppType) => {
     const appWindows = windows.filter(w => w.appType === appType)
 
-    if (appWindows.length === 1) {
+    if (appWindows.length === 0) {
+      const app = installedApps.find(a => a.type === appType)
+      if (app) {
+        addWindow({
+          id: `${appType}-${Date.now()}`,
+          title: app.name,
+          icon: app.icon,
+          appType: appType,
+          isMaximized: false,
+          isMinimized: false,
+          position: { x: 150, y: 100 },
+          size: { width: 800, height: 600 },
+        })
+      }
+    } else if (appWindows.length === 1) {
       // Single window - use normal behavior
       handleAppClick(appWindows[0].id)
     } else if (appWindows.length > 1) {
@@ -291,7 +305,7 @@ export default function Taskbar() {
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
           <Wifi className="w-4 h-4" />
           <Volume2 className="w-4 h-4" />
-          <Battery className="w-4 h-4" />
+          <BatteryFull className="w-4 h-4" />
         </div>
 
         {/* Date & Time */}

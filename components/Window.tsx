@@ -182,6 +182,8 @@ export default function Window({ window, children }: WindowProps) {
         <div className="flex items-center h-full">
           <button
             onClick={() => toggleMinimize(window.id)}
+            onMouseDown={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
             className="w-12 h-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center smooth-transition"
             aria-label="Minimize"
           >
@@ -189,6 +191,8 @@ export default function Window({ window, children }: WindowProps) {
           </button>
           <button
             onClick={() => toggleMaximize(window.id)}
+            onMouseDown={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
             className="w-12 h-full hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center smooth-transition"
             aria-label={window.isMaximized ? 'Restore' : 'Maximize'}
           >
@@ -200,6 +204,8 @@ export default function Window({ window, children }: WindowProps) {
           </button>
           <button
             onClick={() => removeWindow(window.id)}
+            onMouseDown={(e) => e.stopPropagation()}
+            onDoubleClick={(e) => e.stopPropagation()}
             className="w-12 h-full hover:bg-red-500 hover:text-white flex items-center justify-center smooth-transition"
             aria-label="Close"
           >
