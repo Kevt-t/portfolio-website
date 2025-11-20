@@ -300,6 +300,15 @@ export default function Taskbar() {
             }}
             onMouseLeave={handleMouseLeave}
           >
+            {/* Invisible bridge to prevent preview from closing when moving mouse */}
+            <div
+              className="fixed bottom-0 h-14 pointer-events-auto"
+              style={{
+                left: previewPosition.x - 100,
+                width: 200,
+                zIndex: 59,
+              }}
+            />
             <WindowPreview
               windows={windows.filter(w => w.appType === hoveredApp)}
               position={previewPosition}
