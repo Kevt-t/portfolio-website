@@ -11,12 +11,14 @@ import ContextMenu from './ContextMenu'
 
 export default function Desktop() {
   const [desktopItems] = useState<FileSystemItem[]>(getDesktopItems())
+  const [selectedIconId, setSelectedIconId] = useState<string | null>(null)
   const { addWindow } = useWindowStore()
   const { closeContextMenu, contextMenu } = useUIStore()
 
   const handleDesktopClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       closeContextMenu()
+      setSelectedIconId(null)
     }
   }
 
@@ -26,6 +28,9 @@ export default function Desktop() {
   }
 
   const handleIconDoubleClick = (item: FileSystemItem) => {
+    // Game icons are purely decorative
+    if (item.icon === 'game') return
+
     if (item.type === 'folder') {
       // Open folder in File Explorer
       addWindow({
@@ -84,15 +89,29 @@ export default function Desktop() {
       <div className="absolute inset-0 bg-black/10 pointer-events-none" />
 
       {/* Desktop Icons Grid */}
-      <div className="p-4 grid grid-cols-auto-fill gap-4 auto-rows-max">
+      <div className="relative z-0 p-4 w-full h-full grid grid-cols-12 grid-rows-[repeat(10,100px)] gap-2">
         {desktopItems.map((item, index) => (
           <motion.div
             key={item.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05, duration: 0.3 }}
+            style={
+              item.gridPosition
+                ? {
+                    gridColumn: item.gridPosition.col,
+                    gridRow: item.gridPosition.row,
+                  }
+                : undefined
+            }
+            className={!item.gridPosition ? 'col-span-1 row-span-1' : ''}
           >
-            <DesktopIcon item={item} onDoubleClick={handleIconDoubleClick} />
+            <DesktopIcon
+              item={item}
+              onDoubleClick={handleIconDoubleClick}
+              isSelected={selectedIconId === item.id}
+              onSelect={() => setSelectedIconId(item.id)}
+            />
           </motion.div>
         ))}
       </div>

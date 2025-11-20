@@ -402,6 +402,47 @@ Technologies:
     dateCreated: new Date('2024-01-01'),
     dateModified: new Date('2024-01-01'),
   },
+  // Game Icons
+  {
+    id: 'game-alien',
+    name: 'Alien Isolation',
+    type: 'exe',
+    path: '/Desktop/Alien Isolation.exe',
+    icon: 'game',
+    gridPosition: { col: 10, row: 1 },
+    dateCreated: new Date('2024-01-01'),
+    dateModified: new Date('2024-01-01'),
+  },
+  {
+    id: 'game-dyinglight',
+    name: 'Dying Light',
+    type: 'exe',
+    path: '/Desktop/Dying Light.exe',
+    icon: 'game',
+    gridPosition: { col: 11, row: 1 },
+    dateCreated: new Date('2024-01-01'),
+    dateModified: new Date('2024-01-01'),
+  },
+  {
+    id: 'game-lfd2',
+    name: 'Left 4 Dead 2',
+    type: 'exe',
+    path: '/Desktop/Left 4 Dead 2.exe',
+    icon: 'game',
+    gridPosition: { col: 10, row: 2 },
+    dateCreated: new Date('2024-01-01'),
+    dateModified: new Date('2024-01-01'),
+  },
+  {
+    id: 'game-swbf',
+    name: 'Star Wars Battlefront',
+    type: 'exe',
+    path: '/Desktop/Star Wars Battlefront.exe',
+    icon: 'game',
+    gridPosition: { col: 11, row: 2 },
+    dateCreated: new Date('2024-01-01'),
+    dateModified: new Date('2024-01-01'),
+  },
 ]
 
 export function findFileByPath(path: string): FileSystemItem | null {

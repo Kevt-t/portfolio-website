@@ -1,16 +1,38 @@
 'use client'
 
-import { useState } from 'react'
 import { FileSystemItem } from '@/types'
 import { Folder, File, FileText, FileJson, Link, Monitor } from 'lucide-react'
 
 interface DesktopIconProps {
   item: FileSystemItem
   onDoubleClick: (item: FileSystemItem) => void
+  isSelected: boolean
+  onSelect: () => void
 }
 
-const getIcon = (type: string, name: string) => {
-  switch (type) {
+const getIcon = (item: FileSystemItem) => {
+  // Game Icons
+  if (item.icon === 'game') {
+    const getGameIcon = (name: string) => {
+      switch (name) {
+        case 'Alien Isolation': return '/gameicons/alien.png'
+        case 'Dying Light': return '/gameicons/dyingLight.png'
+        case 'Left 4 Dead 2': return '/gameicons/lfd2.png'
+        case 'Star Wars Battlefront': return '/gameicons/starwarsbattlefront.png'
+        default: return null
+      }
+    }
+    const iconPath = getGameIcon(item.name)
+    if (iconPath) {
+      return (
+        <div className="w-12 h-12 relative">
+          <img src={iconPath} alt={item.name} className="w-full h-full object-contain drop-shadow-md" draggable={false} />
+        </div>
+      )
+    }
+  }
+
+  switch (item.type) {
     case 'folder':
       return (
         <div className="relative w-12 h-12">
@@ -31,7 +53,7 @@ const getIcon = (type: string, name: string) => {
     case 'pdf':
       return <File className="w-12 h-12 text-red-400" />
     case 'shortcut':
-      return name === 'This PC' ? (
+      return item.name === 'This PC' ? (
         <div className="relative w-12 h-12">
           <div className="absolute left-1 top-1.5 w-10 h-7 bg-white rounded-[2px]" />
           <Monitor className="relative z-10 w-12 h-12 text-blue-400" />
@@ -44,9 +66,7 @@ const getIcon = (type: string, name: string) => {
   }
 }
 
-export default function DesktopIcon({ item, onDoubleClick }: DesktopIconProps) {
-  const [isSelected, setIsSelected] = useState(false)
-
+export default function DesktopIcon({ item, onDoubleClick, isSelected, onSelect }: DesktopIconProps) {
   return (
     <div
       className={`
@@ -54,10 +74,10 @@ export default function DesktopIcon({ item, onDoubleClick }: DesktopIconProps) {
         ${isSelected ? 'bg-blue-500/30 backdrop-blur-sm' : 'hover:bg-white/10'}
         smooth-transition no-select
       `}
-      onClick={() => setIsSelected(true)}
+      onClick={onSelect}
       onDoubleClick={() => onDoubleClick(item)}
     >
-      <div className="mb-1">{getIcon(item.type, item.name)}</div>
+      <div className="mb-1">{getIcon(item)}</div>
       <span className="text-xs text-white text-center drop-shadow-lg leading-tight line-clamp-2">
         {item.name}
       </span>

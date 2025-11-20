@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ChevronRight, Home, ChevronLeft, Folder, File, FileText, FileJson, Link as LinkIcon } from 'lucide-react'
+import { ChevronRight, Home, ChevronLeft, Folder, File, FileText, FileJson, Link as LinkIcon, Gamepad2 } from 'lucide-react'
 import { FileSystemItem } from '@/types'
 import { findFileByPath, getDesktopItems } from '@/data/filesystem'
 import { useWindowStore } from '@/store/useWindowStore'
@@ -56,6 +56,8 @@ export default function FileExplorer({ initialPath = '/Desktop' }: FileExplorerP
   }
 
   const handleItemDoubleClick = (item: FileSystemItem) => {
+    if (item.icon === 'game') return
+
     if (item.type === 'folder') {
       navigateTo(item.path)
     } else if (item.type === 'txt' || item.type === 'md' || item.type === 'json') {
@@ -93,8 +95,26 @@ export default function FileExplorer({ initialPath = '/Desktop' }: FileExplorerP
     }
   }
 
-  const getFileIcon = (type: string) => {
-    switch (type) {
+  const getFileIcon = (item: FileSystemItem) => {
+    if (item.icon === 'game') {
+      const getGameIconPath = (name: string) => {
+        switch (name) {
+          case 'Alien Isolation': return '/gameicons/alien.png'
+          case 'Dying Light': return '/gameicons/dyingLight.png'
+          case 'Left 4 Dead 2': return '/gameicons/lfd2.png'
+          case 'Star Wars Battlefront': return '/gameicons/starwarsbattlefront.png'
+          default: return null
+        }
+      }
+      
+      const iconPath = getGameIconPath(item.name)
+      if (iconPath) {
+        return <img src={iconPath} alt={item.name} className="w-4 h-4 object-contain" />
+      }
+      return <Gamepad2 className="w-4 h-4 text-purple-500" />
+    }
+
+    switch (item.type) {
       case 'folder':
         return <Folder className="w-4 h-4 text-yellow-500" />
       case 'txt':
@@ -175,7 +195,7 @@ export default function FileExplorer({ initialPath = '/Desktop' }: FileExplorerP
                 ${selectedItem?.id === item.id ? 'bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'}
               `}
             >
-              <div className="flex-shrink-0">{getFileIcon(item.type)}</div>
+              <div className="flex-shrink-0">{getFileIcon(item)}</div>
               <div className="flex-1 min-w-0">
                 <span className="text-sm text-gray-800 dark:text-gray-200">
                   {item.name}

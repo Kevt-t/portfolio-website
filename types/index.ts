@@ -13,6 +13,7 @@ export interface FileSystemItem {
   target?: string // For shortcuts
   children?: FileSystemItem[]
   readOnly?: boolean
+  gridPosition?: { col: number; row: number }
   metadata?: {
     description?: string
     tags?: string[]
