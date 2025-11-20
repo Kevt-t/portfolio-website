@@ -6,6 +6,7 @@ import Taskbar from '@/components/Taskbar'
 import StartMenu from '@/components/StartMenu'
 import WindowManager from '@/components/WindowManager'
 import BootSequence from '@/components/BootSequence'
+import UrlHandler from '@/components/UrlHandler'
 import { useThemeStore } from '@/store/useThemeStore'
 import { useUIStore } from '@/store/useUIStore'
 
@@ -60,6 +61,7 @@ export default function Home() {
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-win11-bg-light dark:bg-win11-bg-dark">
+      <UrlHandler />
       <BootSequence />
       <Desktop />
       <WindowManager />

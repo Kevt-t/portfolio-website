@@ -181,7 +181,7 @@ Before jumping to code, I invest time in understanding the problem deeply. The r
             'This very website! A creative portfolio designed as a Windows 11 desktop environment with a fully functional file system, draggable windows, and interactive applications.',
           technologies: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion', 'Zustand'],
           projectUrl: 'https://portfolio.example.com',
-          githubUrl: 'https://github.com/username/portfolio-website',
+          githubUrl: 'https://github.com/Kevt-t/portfolio-website',
           tags: ['Creative', 'Interactive', 'Portfolio'],
         },
       },
@@ -427,7 +427,7 @@ Technologies:
         name: 'Email.lnk',
         type: 'shortcut',
         path: '/Desktop/Contact/Email.lnk',
-        target: 'mailto:developer@example.com',
+        target: 'mailto:kevintelleztorres@gmail.com',
         dateCreated: new Date('2024-01-01'),
         dateModified: new Date('2024-01-01'),
         size: 512,
@@ -437,7 +437,7 @@ Technologies:
         name: 'LinkedIn.lnk',
         type: 'shortcut',
         path: '/Desktop/Contact/LinkedIn.lnk',
-        target: 'https://linkedin.com/in/developer',
+        target: 'https://www.linkedin.com/in/kevintelleztorres/',
         dateCreated: new Date('2024-01-01'),
         dateModified: new Date('2024-01-01'),
         size: 512,
@@ -447,23 +447,10 @@ Technologies:
         name: 'GitHub.lnk',
         type: 'shortcut',
         path: '/Desktop/Contact/GitHub.lnk',
-        target: 'https://github.com/developer',
+        target: 'https://github.com/Kevt-t',
         dateCreated: new Date('2024-01-01'),
         dateModified: new Date('2024-01-01'),
         size: 512,
-      },
-      {
-        id: 'contact-calendar',
-        name: 'Schedule_Meeting.exe',
-        type: 'exe',
-        path: '/Desktop/Contact/Schedule_Meeting.exe',
-        target: 'https://calendly.com/developer',
-        dateCreated: new Date('2024-01-01'),
-        dateModified: new Date('2024-01-01'),
-        size: 1024,
-        metadata: {
-          description: 'Schedule a meeting with me',
-        },
       },
     ],
   },
@@ -524,6 +511,20 @@ export function findFileByPath(path: string): FileSystemItem | null {
   const searchInItems = (items: FileSystemItem[]): FileSystemItem | null => {
     for (const item of items) {
       if (item.path === path) return item
+      if (item.children) {
+        const found = searchInItems(item.children)
+        if (found) return found
+      }
+    }
+    return null
+  }
+  return searchInItems(fileSystem)
+}
+
+export function findFileById(id: string): FileSystemItem | null {
+  const searchInItems = (items: FileSystemItem[]): FileSystemItem | null => {
+    for (const item of items) {
+      if (item.id === id) return item
       if (item.children) {
         const found = searchInItems(item.children)
         if (found) return found

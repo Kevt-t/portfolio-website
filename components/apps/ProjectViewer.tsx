@@ -1,13 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 import { FileSystemItem } from '@/types'
-import { ExternalLink, Github, Tag } from 'lucide-react'
+import { ExternalLink, Github, Tag, Link as LinkIcon, Check } from 'lucide-react'
 
 interface ProjectViewerProps {
   project?: FileSystemItem
 }
 
 export default function ProjectViewer({ project }: ProjectViewerProps) {
+  const [copied, setCopied] = useState(false)
+
   if (!project) {
     return (
       <div className="flex items-center justify-center h-full bg-white dark:bg-gray-900">
@@ -55,6 +58,18 @@ export default function ProjectViewer({ project }: ProjectViewerProps) {
               View Code
             </a>
           )}
+          <button
+            onClick={() => {
+              const url = `${window.location.origin}?project=${project.id}`
+              navigator.clipboard.writeText(url)
+              setCopied(true)
+              setTimeout(() => setCopied(false), 2000)
+            }}
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm text-white rounded-win11-sm hover:bg-white/20 smooth-transition font-medium"
+          >
+            {copied ? <Check className="w-4 h-4" /> : <LinkIcon className="w-4 h-4" />}
+            {copied ? 'Copied!' : 'Copy Link'}
+          </button>
         </div>
       </div>
 
