@@ -126,7 +126,7 @@ export default function PdfViewer({ file }: PdfViewerProps) {
             </div>
             {/* Desktop/Tablet Viewer */}
             <iframe
-              src={`${file.content}#toolbar=0&view=FitH`}
+              src={`${file.content}#toolbar=0&navpanes=0&view=FitH`}
               className="hidden sm:block w-full h-full border-none"
               title={file.name}
             />
