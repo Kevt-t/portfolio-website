@@ -49,6 +49,7 @@ Outside Tech
         name: 'Resume.pdf',
         type: 'pdf',
         path: '/Desktop/About Me/Resume.pdf',
+        icon: 'star',
         dateCreated: new Date('2024-11-20'),
         dateModified: new Date('2024-11-20'),
         size: 245760,
@@ -128,10 +129,11 @@ Before jumping to code, I invest time in understanding the problem deeply. The r
         size: 8192000,
         metadata: {
           description:
-            'Production AI-powered SaaS app for ed tech serving 1000+ users across multiple schools. Uses LLM chatbot to restructure behavioral incident reports into objective, unbiased language. Reduces documentation bias and saves teacher time while maintaining compliance with educational standards.',
+            'Production AI-powered SaaS app for ed tech serving 1000+ users across multiple schools. Uses LLM chatbot to restructure behavioral incident reports into objective, unbiased language. Reduces documentation bias and saves teacher time while maintaining compliance with educational standards. Contracted by and built for Building21',
           technologies: ['Next.js', 'TypeScript', 'AWS SES', 'PostgreSQL', 'Zod', 'Playlab API', 'Google OAuth', 'Docker'],
           projectUrl: '',
           githubUrl: '',
+          clientUrl: 'https://building21.org/',
           tags: ['AI/ML', 'Production Scale', 'Full-Stack', 'Ed Tech SaaS'],
           screenshots: [
             '/screenshots/behavorial_log/1_super_user_dashboard.webp',

@@ -66,6 +66,17 @@ export default function ProjectViewer({ project }: ProjectViewerProps) {
               <span className="whitespace-nowrap">View Code</span>
             </a>
           )}
+          {metadata?.clientUrl && (
+            <a
+              href={metadata.clientUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 backdrop-blur-sm text-white rounded-win11-sm hover:bg-white/20 smooth-transition font-medium text-sm sm:text-base touch-target"
+            >
+              <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="whitespace-nowrap">Client Site</span>
+            </a>
+          )}
           <button
             onClick={() => {
               const url = `${window.location.origin}?project=${project.id}`

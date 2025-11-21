@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { FileSystemItem } from '@/types'
-import { Folder, File, FileText, FileJson, Link, Monitor } from 'lucide-react'
+import { Folder, File, FileText, FileJson, Link, Monitor, Star } from 'lucide-react'
 
 interface DesktopIconProps {
   item: FileSystemItem
@@ -12,6 +12,11 @@ interface DesktopIconProps {
 }
 
 const getIcon = (item: FileSystemItem) => {
+  // Star Icon
+  if (item.icon === 'star') {
+    return <Star className="w-12 h-12 text-yellow-400 fill-yellow-400" />
+  }
+
   // Game Icons
   if (item.icon === 'game') {
     const getGameIcon = (name: string) => {

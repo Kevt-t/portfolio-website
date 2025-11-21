@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ChevronRight, Home, ChevronLeft, Folder, File, FileText, FileJson, Link as LinkIcon, Gamepad2 } from 'lucide-react'
+import { ChevronRight, Home, ChevronLeft, Folder, File, FileText, FileJson, Link as LinkIcon, Gamepad2, Star } from 'lucide-react'
 import { FileSystemItem } from '@/types'
 import { findFileByPath, getDesktopItems } from '@/data/filesystem'
 import { useWindowStore } from '@/store/useWindowStore'
@@ -150,6 +150,10 @@ export default function FileExplorer({ initialPath = '/Desktop' }: FileExplorerP
   }
 
   const getFileIcon = (item: FileSystemItem) => {
+    if (item.icon === 'star') {
+      return <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+    }
+
     if (item.icon === 'game') {
       const getGameIconPath = (name: string) => {
         switch (name) {

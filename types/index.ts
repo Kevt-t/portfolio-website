@@ -24,6 +24,7 @@ export interface FileSystemItem {
     projectUrl?: string
     githubUrl?: string
     videoUrl?: string
+    clientUrl?: string
     screenshots?: string[]
     noPreview?: boolean
   }
