@@ -177,7 +177,7 @@ export default function Taskbar() {
       <div className="absolute inset-0 bg-win11-taskbar-light dark:bg-win11-taskbar-dark backdrop-blur-win11" />
 
       {/* Taskbar Content */}
-      <div className="relative flex items-center gap-0.5 sm:gap-1 pl-1 pr-16 sm:px-2 pl-safe pr-safe">
+      <div className="relative flex items-center gap-0.5 sm:gap-1 pl-1 pr-12 sm:px-2 pl-safe pr-safe">
         {/* Start Button */}
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -310,13 +310,13 @@ export default function Taskbar() {
       </div>
 
       {/* System Tray */}
-      <div className="absolute right-0 flex items-center gap-1 sm:gap-2 px-1 sm:px-3 h-full">
-        {/* Theme Toggle */}
+      <div className="absolute right-0 flex items-center gap-1 sm:gap-2 px-1 sm:px-3 h-full pb-safe pr-safe">
+        {/* Theme Toggle - Hidden on mobile, moved to Start Menu */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={toggleTheme}
-          className="hover:bg-white/10 rounded p-1 sm:p-1 touch-target smooth-transition"
+          className="hidden sm:flex items-center justify-center hover:bg-white/10 rounded p-1 sm:p-1 touch-target smooth-transition"
           aria-label="Toggle theme"
         >
           {theme === 'dark' ? (
@@ -334,7 +334,7 @@ export default function Taskbar() {
         </div>
 
         {/* Date & Time */}
-        <div className="text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 ml-1 sm:ml-2 flex flex-col items-end no-select">
+        <div className="hidden sm:flex text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 ml-1 sm:ml-2 flex-col items-end no-select">
           <span className="font-medium">{formatTime()}</span>
           <span className="hidden sm:inline">{formatDate()}</span>
         </div>
