@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Power, Settings } from 'lucide-react'
+import { Search, Power, Settings, Sun, Moon } from 'lucide-react'
 import { useUIStore } from '@/store/useUIStore'
 import { useWindowStore } from '@/store/useWindowStore'
+import { useThemeStore } from '@/store/useThemeStore'
 import { installedApps, skillsApps } from '@/data/apps'
 
 export default function StartMenu() {
@@ -12,6 +13,7 @@ export default function StartMenu() {
   const menuRef = useRef<HTMLDivElement>(null)
   const { isStartMenuOpen, setStartMenuOpen } = useUIStore()
   const { addWindow } = useWindowStore()
+  const { theme, toggleTheme } = useThemeStore()
 
   // Portrait-aware window sizing
   const getResponsiveWindowSize = () => {
@@ -163,6 +165,19 @@ export default function StartMenu() {
               </span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={toggleTheme}
+                className="min-w-[44px] min-h-[44px] sm:w-9 sm:h-9 flex items-center justify-center rounded hover:bg-gray-200 dark:hover:bg-gray-700 smooth-transition sm:hidden"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? (
+                  <Sun className="w-4 h-4 text-yellow-400" />
+                ) : (
+                  <Moon className="w-4 h-4 text-gray-700 dark:text-gray-300" />
+                )}
+              </motion.button>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
