@@ -207,6 +207,17 @@ Before jumping to code, I invest time in understanding the problem deeply. The r
     dateCreated: new Date('2024-01-01'),
     dateModified: new Date('2024-01-25'),
     children: [
+       {
+        id: 'exp-readme',
+        name: 'README.txt',
+        type: 'txt',
+        path: '/Desktop/Experience/README.txt',
+        dateCreated: new Date('2025-11-21'),
+        dateModified: new Date('2025-11-21'),
+        size: 1024,
+        readOnly: true,
+        content: 'These are AI generated placeholders, I am actively iterating on this section',
+      },
       {
         id: 'exp-techcorp',
         name: 'TechCorp Inc',
