@@ -92,7 +92,7 @@ export default function StartMenu() {
           animate={{ opacity: 1, y: 0, x: "-50%", scale: 1 }}
           exit={{ opacity: 0, y: 20, x: "-50%", scale: 0.95 }}
           transition={{ duration: 0.15 }}
-          className="fixed bottom-14 sm:bottom-16 left-1/2 w-[calc(100%-2rem)] sm:w-[480px] md:w-[540px] max-h-[calc(100vh-6rem)] sm:max-h-[600px] bg-white/90 dark:bg-gray-900/90 backdrop-blur-win11 rounded-win11 win11-shadow border border-gray-200/50 dark:border-gray-700/50 overflow-y-auto mobile-hide-scrollbar z-40 pb-safe"
+          className="fixed bottom-14 sm:bottom-16 left-1/2 w-[calc(100%-2rem)] sm:w-[480px] md:w-[540px] max-h-[calc(100vh-4rem)] sm:max-h-[min(600px,calc(100vh-5rem))] bg-white/90 dark:bg-gray-900/90 backdrop-blur-win11 rounded-win11 win11-shadow border border-gray-200/50 dark:border-gray-700/50 overflow-y-auto mobile-hide-scrollbar z-40 pb-safe"
         >
           {/* Search Bar */}
           <div className="p-4 sm:p-6 pb-3 sm:pb-4">
