@@ -3,6 +3,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { FileSystemItem } from '@/types'
 import { Download, Save, Printer, ZoomIn, ZoomOut, RotateCw } from 'lucide-react'
+import { Document, Page, pdfjs } from 'react-pdf'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
+import 'react-pdf/dist/esm/Page/TextLayer.css'
+
+// Set worker source
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 interface PdfViewerProps {
   file: FileSystemItem
@@ -11,6 +17,11 @@ interface PdfViewerProps {
 export default function PdfViewer({ file }: PdfViewerProps) {
   const [activeMenu, setActiveMenu] = useState<string | null>(null)
   const menuRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [containerWidth, setContainerWidth] = useState<number>(0)
+  const [numPages, setNumPages] = useState<number>(0)
+  const [scale, setScale] = useState(1)
+  const [rotation, setRotation] = useState(0)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -21,6 +32,28 @@ export default function PdfViewer({ file }: PdfViewerProps) {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.contentBoxSize) {
+          const contentBoxSize = Array.isArray(entry.contentBoxSize) ? entry.contentBoxSize[0] : entry.contentBoxSize
+          setContainerWidth(contentBoxSize.inlineSize)
+        } else {
+          setContainerWidth(entry.contentRect.width)
+        }
+      }
+    })
+
+    resizeObserver.observe(containerRef.current)
+    return () => resizeObserver.disconnect()
+  }, [])
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    setNumPages(numPages)
+  }
 
   const handleDownload = () => {
     if (typeof file.content === 'string') {
@@ -33,6 +66,10 @@ export default function PdfViewer({ file }: PdfViewerProps) {
     }
     setActiveMenu(null)
   }
+
+  const handleZoomIn = () => setScale(prev => Math.min(prev + 0.1, 2))
+  const handleZoomOut = () => setScale(prev => Math.max(prev - 0.1, 0.5))
+  const handleRotate = () => setRotation(prev => (prev + 90) % 360)
 
   return (
     <div className="flex flex-col h-full bg-[#525659]">
@@ -59,27 +96,6 @@ export default function PdfViewer({ file }: PdfViewerProps) {
                 <Printer className="w-4 h-4" />
                 <span>Print</span>
               </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] flex items-center gap-2 text-gray-400 cursor-not-allowed">
-                <span>Properties</span>
-              </button>
-            </div>
-          )}
-        </div>
-        <div className="relative">
-          <button
-            className={`px-2 py-1 hover:bg-[#e5e5e5] rounded-sm ${activeMenu === 'edit' ? 'bg-[#e5e5e5]' : ''}`}
-            onClick={() => setActiveMenu(activeMenu === 'edit' ? null : 'edit')}
-          >
-            Edit
-          </button>
-          {activeMenu === 'edit' && (
-            <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-[#ccc] shadow-lg rounded-sm z-50 py-1">
-              <button className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] text-gray-400 cursor-not-allowed">
-                Copy
-              </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] text-gray-400 cursor-not-allowed">
-                Select All
-              </button>
             </div>
           )}
         </div>
@@ -92,15 +108,24 @@ export default function PdfViewer({ file }: PdfViewerProps) {
           </button>
           {activeMenu === 'view' && (
             <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-[#ccc] shadow-lg rounded-sm z-50 py-1">
-              <button className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] flex items-center gap-2 text-gray-400 cursor-not-allowed">
+              <button 
+                className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] flex items-center gap-2"
+                onClick={handleZoomIn}
+              >
                 <ZoomIn className="w-4 h-4" />
                 <span>Zoom In</span>
               </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] flex items-center gap-2 text-gray-400 cursor-not-allowed">
+              <button 
+                className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] flex items-center gap-2"
+                onClick={handleZoomOut}
+              >
                 <ZoomOut className="w-4 h-4" />
                 <span>Zoom Out</span>
               </button>
-              <button className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] flex items-center gap-2 text-gray-400 cursor-not-allowed">
+              <button 
+                className="w-full text-left px-4 py-2 hover:bg-[#e5e5e5] flex items-center gap-2"
+                onClick={handleRotate}
+              >
                 <RotateCw className="w-4 h-4" />
                 <span>Rotate</span>
               </button>
@@ -110,27 +135,35 @@ export default function PdfViewer({ file }: PdfViewerProps) {
       </div>
 
       {/* PDF Content */}
-      <div className="flex-1 w-full h-full overflow-hidden relative">
+      <div className="flex-1 w-full h-full overflow-auto relative bg-[#525659] flex justify-center p-4" ref={containerRef}>
         {typeof file.content === 'string' ? (
-          <>
-            {/* Mobile fallback for better viewing experience */}
-            <div className="sm:hidden absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4 text-center">
-              <p className="mb-4 text-gray-600">PDF viewing is optimized for larger screens.</p>
-              <button
-                onClick={handleDownload}
-                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Download PDF
-              </button>
-            </div>
-            {/* Desktop/Tablet Viewer */}
-            <iframe
-              src={`${file.content}#toolbar=0&navpanes=0&view=FitH`}
-              className="hidden sm:block w-full h-full border-none"
-              title={file.name}
-            />
-          </>
+          <Document
+            file={file.content}
+            onLoadSuccess={onDocumentLoadSuccess}
+            className="flex flex-col gap-4"
+            loading={
+              <div className="flex items-center justify-center text-white">
+                Loading PDF...
+              </div>
+            }
+            error={
+              <div className="flex items-center justify-center text-white">
+                Failed to load PDF.
+              </div>
+            }
+          >
+            {Array.from(new Array(numPages), (el, index) => (
+              <Page
+                key={`page_${index + 1}`}
+                pageNumber={index + 1}
+                width={containerWidth ? Math.min(containerWidth - 32, 800) * scale : undefined}
+                rotate={rotation}
+                className="shadow-lg"
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+              />
+            ))}
+          </Document>
         ) : (
           <div className="flex items-center justify-center h-full text-white">
             Unable to load PDF
