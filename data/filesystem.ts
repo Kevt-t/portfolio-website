@@ -52,7 +52,7 @@ Outside Tech
         dateCreated: new Date('2024-11-20'),
         dateModified: new Date('2024-11-20'),
         size: 245760,
-        content: 'PDF_PLACEHOLDER', // This would link to actual PDF
+        content: '/resume/resume.pdf',
       },
       {
         id: 'skills-json',
@@ -223,7 +223,7 @@ Before jumping to code, I invest time in understanding the problem deeply. The r
         name: 'TechCorp Inc',
         type: 'folder',
         path: '/Desktop/Experience/TechCorp Inc',
-        dateCreated: new Date('2022-01-01'),
+        dateCreated: new Date('2024-01-01'),
         dateModified: new Date('2024-01-01'),
         children: [
           {

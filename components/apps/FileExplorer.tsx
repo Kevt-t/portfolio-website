@@ -127,6 +127,19 @@ export default function FileExplorer({ initialPath = '/Desktop' }: FileExplorerP
         size: { width: windowSize.width, height: windowSize.height },
         content: item,
       })
+    } else if (item.type === 'pdf') {
+      // Open PDF viewer
+      addWindow({
+        id: `pdf-${item.id}`,
+        title: item.name,
+        icon: '📄',
+        appType: 'pdf-viewer',
+        isMaximized: false,
+        isMinimized: false,
+        position: { x: windowSize.x + 20, y: windowSize.y + 20 },
+        size: { width: windowSize.width, height: windowSize.height },
+        content: item,
+      })
     } else if (item.type === 'shortcut' && item.target) {
       if (item.target.startsWith('http') || item.target.startsWith('mailto:')) {
         window.open(item.target, '_blank')

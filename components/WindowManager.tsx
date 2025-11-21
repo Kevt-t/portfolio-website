@@ -9,6 +9,7 @@ import Calculator from './apps/Calculator'
 import Browser from './apps/Browser'
 import Settings from './apps/Settings'
 import ProjectViewer from './apps/ProjectViewer'
+import PdfViewer from './apps/PdfViewer'
 
 export default function WindowManager() {
   const { windows } = useWindowStore()
@@ -27,6 +28,8 @@ export default function WindowManager() {
         return <Settings />
       case 'project-viewer':
         return <ProjectViewer project={window.content} />
+      case 'pdf-viewer':
+        return <PdfViewer file={window.content} />
       case 'about':
         return (
           <div className="p-8 bg-white dark:bg-gray-900 h-full">

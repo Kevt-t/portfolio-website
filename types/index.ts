@@ -52,6 +52,7 @@ export type AppType =
   | 'about'
   | 'project-viewer'
   | 'pdf-viewer'
+  | 'pdf-viewer'
 
 export interface App {
   id: string
