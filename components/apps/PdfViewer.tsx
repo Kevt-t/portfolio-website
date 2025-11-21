@@ -114,7 +114,7 @@ export default function PdfViewer({ file }: PdfViewerProps) {
         {typeof file.content === 'string' ? (
           <>
             {/* Mobile fallback for better viewing experience */}
-            <div className="md:hidden absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4 text-center">
+            <div className="sm:hidden absolute inset-0 flex flex-col items-center justify-center bg-gray-100 p-4 text-center">
               <p className="mb-4 text-gray-600">PDF viewing is optimized for larger screens.</p>
               <button
                 onClick={handleDownload}
@@ -126,8 +126,8 @@ export default function PdfViewer({ file }: PdfViewerProps) {
             </div>
             {/* Desktop/Tablet Viewer */}
             <iframe
-              src={`${file.content}#toolbar=0`}
-              className="hidden md:block w-full h-full border-none"
+              src={`${file.content}#toolbar=0&view=FitH`}
+              className="hidden sm:block w-full h-full border-none"
               title={file.name}
             />
           </>
