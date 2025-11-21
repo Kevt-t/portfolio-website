@@ -4,8 +4,8 @@ import { useState, useRef, useEffect } from 'react'
 import { FileSystemItem } from '@/types'
 import { Download, Save, Printer, ZoomIn, ZoomOut, RotateCw } from 'lucide-react'
 import { Document, Page, pdfjs } from 'react-pdf'
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
-import 'react-pdf/dist/esm/Page/TextLayer.css'
+import 'react-pdf/dist/Page/AnnotationLayer.css'
+import 'react-pdf/dist/Page/TextLayer.css'
 
 // Set worker source
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
