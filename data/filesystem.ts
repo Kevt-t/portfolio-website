@@ -144,23 +144,7 @@ Before jumping to code, I invest time in understanding the problem deeply. The r
           ],
         },
       },
-      {
-        id: 'project-taskmanager',
-        name: 'Task Manager Pro.exe',
-        type: 'exe',
-        path: '/Desktop/Projects/Task Manager Pro.exe',
-        dateCreated: new Date('2023-10-01'),
-        dateModified: new Date('2024-01-20'),
-        size: 8192000,
-        metadata: {
-          description:
-            'A collaborative task management application with drag-and-drop kanban boards, team collaboration features, time tracking, and productivity analytics. Built with real-time synchronization.',
-          technologies: ['React', 'TypeScript', 'Firebase', 'Material-UI', 'WebSockets'],
-          projectUrl: 'https://taskmanager-pro.example.com',
-          githubUrl: 'https://github.com/username/task-manager-pro',
-          tags: ['Productivity', 'Real-time', 'Collaboration'],
-        },
-      },
+
       {
         id: 'project-on-track',
         name: 'On Track.exe',
