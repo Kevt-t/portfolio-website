@@ -62,6 +62,7 @@ Outside Tech
         dateCreated: new Date('2024-01-01'),
         dateModified: new Date('2024-01-15'),
         size: 2048,
+        readOnly: true,
         content: {
           languages: ['JavaScript', 'TypeScript', 'Python', 'Java', 'Go', 'SQL'],
           frameworks: ['React', 'Next.js', 'Node.js', 'Express', 'Django', 'Spring Boot'],
