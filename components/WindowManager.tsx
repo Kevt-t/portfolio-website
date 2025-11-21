@@ -9,7 +9,11 @@ import Calculator from './apps/Calculator'
 import Browser from './apps/Browser'
 import Settings from './apps/Settings'
 import ProjectViewer from './apps/ProjectViewer'
-import PdfViewer from './apps/PdfViewer'
+import dynamic from 'next/dynamic'
+
+const PdfViewer = dynamic(() => import('./apps/PdfViewer'), {
+  ssr: false,
+})
 
 export default function WindowManager() {
   const { windows } = useWindowStore()
