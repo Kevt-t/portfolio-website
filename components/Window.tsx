@@ -78,7 +78,7 @@ export default function Window({ window, children }: WindowProps) {
     }
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (isDragging || isResizing || isPinching) {
+      if ((isDragging || isResizing || isPinching) && e.cancelable) {
         e.preventDefault() // Prevent scrolling while dragging/resizing
       }
 
@@ -294,7 +294,9 @@ export default function Window({ window, children }: WindowProps) {
 
   const handleResizeTouchStart = (e: React.TouchEvent, direction: string) => {
     e.stopPropagation()
-    e.preventDefault()
+    if (e.cancelable) {
+      e.preventDefault()
+    }
     const touch = e.touches[0]
     if (!touch) return
 
