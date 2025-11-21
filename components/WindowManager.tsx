@@ -29,13 +29,13 @@ export default function WindowManager() {
         return <ProjectViewer project={window.content} />
       case 'about':
         return (
-          <div className="p-8 bg-white dark:bg-gray-900">
+          <div className="p-8 bg-white dark:bg-gray-900 h-full">
             <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">
               About This Portfolio
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               This portfolio is designed as a fully functional Windows 11 desktop environment,
-              showcasing my work through an interactive file system experience.
+              showcasing my work through an interactive file system experience. It's mobile friendly too.
             </p>
             <p className="text-gray-600 dark:text-gray-400">
               Feel free to explore the folders on the desktop to learn more about my projects,

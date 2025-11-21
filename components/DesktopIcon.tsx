@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useRef } from 'react'
 import { FileSystemItem } from '@/types'
 import { Folder, File, FileText, FileJson, Link, Monitor } from 'lucide-react'
 
@@ -67,18 +68,42 @@ const getIcon = (item: FileSystemItem) => {
 }
 
 export default function DesktopIcon({ item, onDoubleClick, isSelected, onSelect }: DesktopIconProps) {
+  const [lastTap, setLastTap] = useState(0)
+  const touchTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
+
+  const handleTouch = (e: React.TouchEvent) => {
+    const now = Date.now()
+    const DOUBLE_TAP_DELAY = 300
+
+    if (now - lastTap < DOUBLE_TAP_DELAY) {
+      // Double tap detected
+      e.preventDefault()
+      onDoubleClick(item)
+      setLastTap(0)
+    } else {
+      // Single tap - select
+      setLastTap(now)
+      onSelect()
+
+      // Clear double tap timer after delay
+      if (touchTimerRef.current) clearTimeout(touchTimerRef.current)
+      touchTimerRef.current = setTimeout(() => setLastTap(0), DOUBLE_TAP_DELAY)
+    }
+  }
+
   return (
     <div
       className={`
-        flex flex-col items-center justify-center w-24 h-24 p-2 rounded cursor-pointer
+        flex flex-col items-center justify-center w-20 sm:w-24 h-20 sm:h-24 p-1 sm:p-2 rounded cursor-pointer
         ${isSelected ? 'bg-blue-500/30 backdrop-blur-sm' : 'hover:bg-white/10'}
-        smooth-transition no-select
+        smooth-transition no-select touch-target
       `}
       onClick={onSelect}
       onDoubleClick={() => onDoubleClick(item)}
+      onTouchEnd={handleTouch}
     >
-      <div className="mb-1">{getIcon(item)}</div>
-      <span className="text-xs text-white text-center drop-shadow-lg leading-tight line-clamp-2">
+      <div className="mb-1 scale-90 sm:scale-100">{getIcon(item)}</div>
+      <span className="text-[10px] sm:text-xs text-white text-center drop-shadow-lg leading-tight line-clamp-2">
         {item.name}
       </span>
     </div>

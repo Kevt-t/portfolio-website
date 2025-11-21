@@ -22,9 +22,9 @@ export default function Calculator() {
   const [easterEggClicks, setEasterEggClicks] = useState(0)
 
   const easterEggMessages = [
-    "There's more interesting things ya know",
-    "This is the least cool thing here",
-    "Ok you're getting the silent treatment now",
+    "You have an app for that...",
+    "You must be bored",
+    "I had enough",
     "..."
   ]
 
@@ -65,7 +65,7 @@ export default function Calculator() {
         <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 h-4">
           {/* Placeholder for operation history if needed */}
         </div>
-        <div className="text-4xl font-light text-gray-800 dark:text-gray-200 truncate pb-1">
+        <div className="text-xl sm:text-4xl font-light text-gray-800 dark:text-gray-200 truncate pb-1">
           {display}
         </div>
       </div>
