@@ -23,17 +23,17 @@ export const fileSystem: FileSystemItem[] = [
         content: `My Interests and Passions
 =============================
 
-Creative Pursuits                   ******       ******
-- UI/UX design                    **      **   **      **
-- Digital art and graphics       **        ** **        **
-- Photography                    **         ***         **
-- Writing                         **         *         **
-                                   **                 **
-                                    **               **
-Learning & Growth                     **           **
-- Continuous learning                   **       **
-- Teaching and mentoring                  **   **
-- Building side projects                    ***
+Creative Pursuits            
+- UI/UX design             
+- Digital art and graphics
+- Photography                
+- Writing                ***         ***  
+                        **  ***   ***  **
+                        **    ** **    **
+Learning & Growth        **           **
+- Continuous learning      **       **
+- Teaching and mentoring     **   **
+- Building side projects       ***
 - Contributing to developer communities
 - Attending tech conferences and meetups
 
@@ -64,13 +64,13 @@ Outside Tech
         size: 2048,
         readOnly: true,
         content: {
-          languages: ['JavaScript', 'TypeScript', 'Python', 'Java', 'Go', 'SQL'],
-          frameworks: ['React', 'Next.js', 'Node.js', 'Express', 'Django', 'Spring Boot'],
-          tools: ['Git', 'Docker', 'Kubernetes', 'AWS', 'Azure', 'MongoDB', 'PostgreSQL'],
-          design: ['Figma', 'Adobe XD', 'Photoshop', 'Illustrator'],
+          languages: ['JavaScript', 'TypeScript', 'Python'],
+          frameworks: ['React', 'Next.js', 'Node.js', 'Express'],
+          databases: ['MongoDB', 'PostgreSQL', 'MySQL'],
+          tools: ['Git', 'Docker', 'AWS'],
+          design: ['Figma', 'Adobe Express', 'Photoshop'],
           concepts: [
             'RESTful APIs',
-            'GraphQL',
             'Microservices',
             'CI/CD',
             'Agile/Scrum',
