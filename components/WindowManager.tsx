@@ -35,7 +35,8 @@ export default function WindowManager() {
             </h1>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               This portfolio is designed as a fully functional Windows 11 desktop environment,
-              showcasing my work through an interactive file system experience. It's mobile friendly too.
+              showcasing my work through an interactive file system experience. Most of the components have a function. It's mobile 
+              friendly too.
             </p>
             <p className="text-gray-600 dark:text-gray-400">
               Feel free to explore the folders on the desktop to learn more about my projects,
