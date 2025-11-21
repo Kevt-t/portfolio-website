@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { FileSystemItem } from '@/types'
-import { ExternalLink, Github, Tag, Link as LinkIcon, Check } from 'lucide-react'
+import { ExternalLink, Github, Tag, Link as LinkIcon, Check, ChevronLeft, ChevronRight, Maximize, X } from 'lucide-react'
 
 interface ProjectViewerProps {
   project?: FileSystemItem
@@ -10,6 +11,13 @@ interface ProjectViewerProps {
 
 export default function ProjectViewer({ project }: ProjectViewerProps) {
   const [copied, setCopied] = useState(false)
+  const [currentScreenshotIndex, setCurrentScreenshotIndex] = useState(0)
+  const [isFullScreen, setIsFullScreen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   if (!project) {
     return (
@@ -142,16 +150,137 @@ export default function ProjectViewer({ project }: ProjectViewerProps) {
         </div>
 
         {/* Placeholder for screenshots/demo */}
-        <div className="mt-6 sm:mt-8 bg-white dark:bg-gray-800 rounded-win11 p-4 sm:p-6 md:p-8 win11-shadow">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4">
-            Project Preview
-          </h2>
-          <div className="aspect-video bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-win11 flex items-center justify-center">
-            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base md:text-lg">
-              Project Screenshot / Demo
-            </p>
+        {!metadata?.noPreview && (
+          <div className="mt-6 sm:mt-8 bg-white dark:bg-gray-800 rounded-win11 p-4 sm:p-6 md:p-8 win11-shadow">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-200 mb-3 sm:mb-4">
+              Project Preview
+            </h2>
+            <div className="relative aspect-video bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600 rounded-win11 overflow-hidden group">
+              {metadata?.videoUrl ? (
+                <iframe
+                  src={metadata.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')}
+                  title={`${project.name} Demo Video`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : metadata?.screenshots && metadata.screenshots.length > 0 ? (
+                <>
+                  <img
+                    src={metadata.screenshots[currentScreenshotIndex]}
+                    alt={`Screenshot ${currentScreenshotIndex + 1}`}
+                    className="w-full h-full object-cover cursor-pointer"
+                    onClick={() => setIsFullScreen(true)}
+                  />
+                  
+                  <button
+                    onClick={() => setIsFullScreen(true)}
+                    className="absolute top-2 right-2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Maximize className="w-5 h-5" />
+                  </button>
+
+                  {metadata.screenshots.length > 1 && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setCurrentScreenshotIndex((prev) => (prev === 0 ? metadata.screenshots!.length - 1 : prev - 1))
+                        }}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setCurrentScreenshotIndex((prev) => (prev === metadata.screenshots!.length - 1 ? 0 : prev + 1))
+                        }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                      
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                        {metadata.screenshots.map((_, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setCurrentScreenshotIndex(idx)}
+                            className={`w-2 h-2 rounded-full transition-colors ${
+                              idx === currentScreenshotIndex ? 'bg-white' : 'bg-white/50 hover:bg-white/80'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base md:text-lg">
+                    Project Screenshot / Demo
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Full Screen Gallery Overlay */}
+        {isFullScreen && metadata?.screenshots && mounted && createPortal(
+          <div className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center">
+            <button
+              onClick={() => setIsFullScreen(false)}
+              className="absolute top-4 right-4 p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors z-50"
+            >
+              <X className="w-8 h-8" />
+            </button>
+
+            <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-8">
+              <img
+                src={metadata.screenshots[currentScreenshotIndex]}
+                alt={`Screenshot ${currentScreenshotIndex + 1}`}
+                className="max-w-full max-h-full object-contain"
+              />
+
+              {metadata.screenshots.length > 1 && (
+                <>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setCurrentScreenshotIndex((prev) => (prev === 0 ? metadata.screenshots!.length - 1 : prev - 1))
+                    }}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors z-50"
+                  >
+                    <ChevronLeft className="w-8 h-8" />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setCurrentScreenshotIndex((prev) => (prev === metadata.screenshots!.length - 1 ? 0 : prev + 1))
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors z-50"
+                  >
+                    <ChevronRight className="w-8 h-8" />
+                  </button>
+
+                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-50">
+                    {metadata.screenshots.map((_, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setCurrentScreenshotIndex(idx)}
+                        className={`w-3 h-3 rounded-full transition-colors ${
+                          idx === currentScreenshotIndex ? 'bg-white' : 'bg-white/30 hover:bg-white/60'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>,
+          document.body
+        )}
       </div>
     </div>
   )

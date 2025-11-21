@@ -23,6 +23,9 @@ export interface FileSystemItem {
     technologies?: string[]
     projectUrl?: string
     githubUrl?: string
+    videoUrl?: string
+    screenshots?: string[]
+    noPreview?: boolean
   }
 }
 
