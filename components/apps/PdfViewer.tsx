@@ -55,14 +55,31 @@ export default function PdfViewer({ file }: PdfViewerProps) {
     setNumPages(numPages)
   }
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (typeof file.content === 'string') {
-      const link = document.createElement('a')
-      link.href = file.content
-      link.download = file.name
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      try {
+        const response = await fetch(file.content)
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        
+        const link = document.createElement('a')
+        link.href = url
+        link.download = file.name
+        document.body.appendChild(link)
+        link.click()
+        
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+      } catch (error) {
+        console.error('Download failed:', error)
+        // Fallback
+        const link = document.createElement('a')
+        link.href = file.content
+        link.download = file.name
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      }
     }
     setActiveMenu(null)
   }
