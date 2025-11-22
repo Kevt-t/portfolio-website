@@ -172,7 +172,7 @@ export default function Taskbar() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-12 sm:h-12 flex items-center justify-center z-[9999] pb-safe">
+    <div className="fixed bottom-0 left-0 right-0 h-12 sm:h-12 box-content flex items-center justify-center z-[9999] pb-safe">
       {/* Taskbar Background */}
       <div className="absolute inset-0 bg-win11-taskbar-light dark:bg-win11-taskbar-dark backdrop-blur-win11" />
 
