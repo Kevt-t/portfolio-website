@@ -310,13 +310,13 @@ export default function Taskbar() {
       </div>
 
       {/* System Tray */}
-      <div className="absolute right-0 flex items-center gap-1 sm:gap-2 px-1 sm:px-3 h-12 sm:h-12 pb-safe pr-safe">
+      <div className="absolute right-0 top-0 bottom-0 flex items-center gap-1 sm:gap-2 px-1 sm:px-3 pb-safe pr-safe">
         {/* Theme Toggle - Hidden on mobile, moved to Start Menu */}
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={toggleTheme}
-          className="hidden sm:flex items-center justify-center hover:bg-white/10 rounded p-1 sm:p-1 smooth-transition"
+          className="hidden sm:flex items-center justify-center hover:bg-white/10 rounded p-1.5 sm:p-1.5 smooth-transition"
           aria-label="Toggle theme"
         >
           {theme === 'dark' ? (
@@ -334,7 +334,7 @@ export default function Taskbar() {
         </div>
 
         {/* Date & Time */}
-        <div className="hidden sm:flex text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 ml-1 sm:ml-2 flex-col items-center justify-center no-select">
+        <div className="hidden sm:flex text-[10px] sm:text-xs text-gray-700 dark:text-gray-300 ml-1 sm:ml-2 flex-col items-end justify-center no-select">
           <span className="font-medium">{formatTime()}</span>
           <span className="hidden sm:inline">{formatDate()}</span>
         </div>
