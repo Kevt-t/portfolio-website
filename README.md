@@ -178,3 +178,4 @@ MIT License - Feel free to use this as a template for your own portfolio!
 
 Designed and developed as a creative portfolio showcase.
 Inspired by the Windows 11 operating system.
+
